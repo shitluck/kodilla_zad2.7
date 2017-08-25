@@ -19,18 +19,26 @@ var contacts = [
   }
 ];
 
-var contactForm = {
-  firstName: '',
-  lastName: '',
-  email: ''
-};
-
 var App = React.createClass({
-  render: function() {
+  getInitialState() {
+    return {
+      contacts
+    }
+  },
+
+  addContactToList({firstName, lastName, email}, callback) {
+    this.setState(state => {
+      state.contacts = [{
+        firstName, lastName, email, id: (length => ++length)(state.contacts.length)
+      }, ...state.contacts]
+    }, callback());
+  },
+
+  render() {
     return (
       <div className={'app'}>
-        <ContactForm contact={contactForm}></ContactForm>
-        <Contacts items={contacts}></Contacts>
+        <ContactForm action={(first, second, third) => this.addContactToList(first, second, third)}></ContactForm>
+        <Contacts items={this.state.contacts}></Contacts>
       </div>
     );
   }
